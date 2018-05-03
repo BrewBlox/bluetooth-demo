@@ -54,10 +54,10 @@ Docker containers are not inherently granted access to the Bluetooth connector.
 
 The simple solution (used in the demo) is to run the container in privileged mode on the host network. This approach will be an issue if the service is to be integrated with the rest of the BrewBlox services.
 
-### Helia Protocol
+### Communication Protocol
 
 Bluetooth itself is little more than a serial transport procotol.
-At time of writing, there was no concrete data on the communication protocol used by the Helia gateway.
+Communication with concrete devices will require implementing their protocol.
 
 ## Conclusion
 
