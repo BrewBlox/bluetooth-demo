@@ -1,105 +1,66 @@
-# Boilerplate code for BrewBlox Service plugins
+# Bluetooth demo for BrewBlox
 
-There is some boilerplate code involved when creating a Brewblox service plugin. This repository can be forked to avoid having to do the boring configuration.
+This repository is based on the BrewBlox boilerplate, and serves as a proof of concept for bluetooth communication.
 
-Everything listed under **Required Changes** must be done before the package works as intended.
+## Running
 
-## How to use
+Requires:
+* A Docker installation
+* An enabled bluetooth dongle / connector
 
-* Fork this repository to your own Github account or project
-* Follow all steps outlined under the various **Required Changes**
-* Start coding your plugin =)
+Recommended:
+* A bluetooth-capable smartphone
 
-
-## Files
-
-### [setup.py](./setup.py)
-Used to create a distributable and installable Python package. See https://docs.python.org/3.6/distutils/setupscript.html for more information.
-
-**Required Changes:** 
-* Change the `project_name` variable to your project name. This is generally the same as the repository name. This name is used when installing the package through Pip.
-* Change the `package_name` variable to the module name. This can be the same name as your project name, but can't include dashes (`-`). This name is used when importing your package in Python.
-* Check whether all other fields are correct. Refer to the documentation for more info.
-* Change the `url` parameter to the url of your repository.
-* Change the `author` parameter to your name.
-* Change the `author_email` parameter to your email.
-
-
-### [tox.ini](./tox.ini)
-This file kicks off automated testing and linting of your package. See http://tox.readthedocs.io/en/latest/config.html for more information.
-
-**Required Changes:**
-* Change `--cov=YOUR_PACKAGE` to refer to your module name.
-* The `--cov-fail-under=100` makes the build fail if code coverage is less than 100%. It is optional, but recommended. Remove the `#` comment character to enable it.
-
-
-### [Pipfile](./Pipfile)
-Lists all dependencies. Everything under [packages] is needed for the package to run, while everything under [dev-packages] is needed to run the tests.
-
-You can use `pipenv install <package name>` or `pipenv install --dev <package name>` to add dependencies.
-
-**Note:** There is overlap between your requirements file, and the `install_requires=[]` line in `setup.py`. For most cases, the rule of thumb is that if you need an external package to run, you should add it as dependency to both files.
-
-**Required Changes:**
-* Install pipenv (run `sudo pip3 install pipenv`)
-* Generate a `Pipfile.lock` file (run `pipenv lock`)
-
-
-### [MANIFEST.in](./MANIFEST.in)
-This file lists all non-code files that should be part of the package. 
-See https://docs.python.org/3.6/distutils/sourcedist.html#specifying-the-files-to-distribute for more info.
-
-For a basic plugin, you do not need to change anything in this file.
-
-
-### [.travis.yml](./.travis.yml)
-Travis CI configuration. If you haven't enabled travis for your repository: don't worry, it won't do anything.
-
-
-### [.coveragerc](./.coveragerc)
-This file contains some configuration for `pytest-cov`.
-
-For a basic plugin, you do not need to change anything in this file.
-
-
-### [README.md](./README.md)
-Your module readme (this file). It will be the package description on Pypi.org, and automatically be displayed in Github.
-
-**Required Changes:**
-* Add all important info about your package here. What does your package do? How do you use it? What is your favorite color?
-
-
-### [YOUR_PACKAGE/](./YOUR_PACKAGE/)
-Your module. This directory name should match the `package_name` variable in `setup.py`.
-
-**Required Changes:**
-* Rename to the desired module name. (Python import name. Can't include dashes (`-`)).
-
-
-### [test/conftest.py](./test/conftest.py)
-Project-level pytest fixtures. Some useful fixtures for testing any brewblox_service implementation are defined here. See tests in https://github.com/BrewBlox/brewblox-service/tree/develop/test for examples on how to use.
-
-For a basic implementation, you do not need to change anything in this file.
-
-
-### [test/test_hello.py](./test/test_hello.py)
-An example on how to test aiohttp endpoints you added. Feel free to remove this once you no longer need it.
-
-
-### [docker/Dockerfile](./docker/Dockerfile)
-A docker file for running your package. You can use a local version of your package by copying it to `docker/pkg/` before building.
-
-Example:
-```bash
-tox
-
-mkdir -p docker/pkg
-rm docker/pkg/*
-cp .tox/dist/* docker/pkg/
-
-docker build --tag your-package docker/
-docker run your-package
+Starting:
+```
+docker run --net=host --privileged brewblox/bluetooth-demo:develop
 ```
 
-**Required Changes:**
-* Rename instances of `YOUR-PACKAGE` and `YOUR_PACKAGE` in the docker file to desired module and package names.
+The simplest way to ensure there is a discoverable device is to enable bluetooth on a smartphone.
+
+Instructions (for Android 8):
+* Go to `Settings`
+* Go to `Connected devices`
+* Enable `Bluetooth` toggle
+* Select `Bluetooth`
+* select `Pair new device`
+
+Instructions (for iPhone):
+* Go to `Settings`
+* Go to `Bluetooth`
+* Enable `Bluetooth` toggle
+
+
+Now navigate to [localhost:5000/blueblox/api/doc#!/Bluetooth/bluetooth_discover](localhost:5000/blueblox/api/doc#!/Bluetooth/bluetooth_discover) and click 'Try it out!'.
+
+
+## Known issues
+
+### Asyncio
+
+The BrewBlox services are written using the `asyncio` framework to allow concurrency without multi-threading. There does not seem to be a simple asyncio library for Bluetooth.
+
+This does not mean it's impossible to integrate the two, but it would require writing an async wrapper around a raw Python socket.
+
+An alternative approach would be to use a separate thread for Bluetooth communication.
+
+### Bluetooth Low Energy
+
+There are two Bluetooth protocols: Bluetooth, and Bluetooth Low Energy (BLE). The current demo only supports Bluetooth devices.
+
+### Accessing Bluetooth from Docker
+
+Docker containers are not inherently granted access to the Bluetooth connector.
+
+The simple solution (used in the demo) is to run the container in privileged mode on the host network. This approach will be an issue if the service is to be integrated with the rest of the BrewBlox services.
+
+### Helia Protocol
+
+Bluetooth itself is little more than a serial transport procotol.
+At time of writing, there was no concrete data on the communication protocol used by the Helia gateway.
+
+## Conclusion
+
+Using Bluetooth certainly seems feasible, but there are a few issues that must be resolved.
+
+There does not seem to be an off-the-shelf library solution, so it is likely that integration involves writing a new asyncio-compatible bluetooth library.

@@ -11,7 +11,10 @@ env:
     - DOCKER_REPO=brewblox/bluetooth-demo
     - GITHUB_REPO=BrewBlox/bluetooth-demo
 
-install: pip install tox brewblox-tools~=0.2.0
+install:
+  apt-get update 
+  && apt-get install -y bluez libbluetooth-dev
+  && pip install tox brewblox-tools~=0.2.0
 
 script: tox
 
