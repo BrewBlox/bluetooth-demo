@@ -1,4 +1,4 @@
-FROM brewblox/brewblox-service:latest
+FROM brewblox/brewblox-service:rpi-latest
 
 RUN apt-get update && apt-get install -y bluez libbluetooth-dev
 

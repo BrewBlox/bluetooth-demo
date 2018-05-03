@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
-project_name = 'YOUR-PACKAGE'
-package_name = 'YOUR_PACKAGE'
+project_name = 'bluetooth-demo'
+package_name = 'blueblox_demo'
 
 setup(
     name=project_name,
@@ -20,7 +20,8 @@ setup(
     keywords='brewing brewpi brewblox embedded plugin service',
     packages=find_packages(exclude=['test']),
     install_requires=[
-        'brewblox-service~=0.5'
+        'brewblox-service~=0.8',
+        'pybluez',
     ],
     python_requires='>=3.6',
     extras_require={'dev': ['tox', 'pipenv']}

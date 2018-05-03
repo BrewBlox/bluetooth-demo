@@ -8,6 +8,7 @@ from typing import Type
 from aiohttp import web
 
 from brewblox_service import events, service
+from blueblox_demo import blue
 
 routes = web.RouteTableDef()
 LOGGER = logging.getLogger(__name__)
@@ -119,9 +120,11 @@ def add_events(app):
 
 
 def main():
-    app = service.create_app(default_name='YOUR_PACKAGE')
+    app = service.create_app(default_name='blueblox')
 
-    add_events(app)
+    # add_events(app)
+
+    blue.setup(app)
 
     # Register routes in this file (/example/endpoint in our case)
     app.router.add_routes(routes)

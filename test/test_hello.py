@@ -4,7 +4,7 @@ Checks whether we can call the hello endpoint.
 
 import pytest
 
-import YOUR_PACKAGE.__main__ as main
+import blueblox_demo.__main__ as main
 
 
 @pytest.fixture
