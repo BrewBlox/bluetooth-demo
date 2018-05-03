@@ -31,7 +31,7 @@ Instructions (for iPhone):
 * Enable `Bluetooth` toggle
 
 
-Now navigate to <localhost:5000/blueblox/api/doc#!/Bluetooth/bluetooth_discover> and click 'Try it out!'.
+Now navigate to <http://localhost:5000/blueblox/api/doc#!/Bluetooth/bluetooth_discover> and click 'Try it out!'.
 
 
 ## Known issues
